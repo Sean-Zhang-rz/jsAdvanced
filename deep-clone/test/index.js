@@ -55,7 +55,6 @@ describe('deepClone', () => {
       assert.deepEqual(a, a2);
     });
     it('可以复制正则表达式', () => {
-      //   const a = /hi\d+/gi;
       const a = new RegExp('hi\\d+', 'gi');
       a.xxx = { yyy: { zzz: 1 } };
       const a2 = new DeepClone().clone(a);
