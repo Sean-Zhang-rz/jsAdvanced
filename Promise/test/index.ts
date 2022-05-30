@@ -87,4 +87,95 @@ describe('Promise', () => {
     });
     promise.then(succeed);
   });
+  it('res或者rej只能被调用一次', (done) => {
+    const succeed = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      assert.isFalse(succeed.called);
+      res(233);
+      res(234444);
+      setTimeout(() => {
+        assert.isTrue(promise.state === 'fullfilled');
+        assert.isTrue(succeed.calledOnce);
+        assert.isTrue(succeed.calledWith(233));
+        done();
+      }, 0);
+    });
+    promise.then(succeed);
+  });
+  it('rej也适用', (done) => {
+    const fail = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      assert.isFalse(fail.called);
+      rej('失败了');
+      rej('又失败了');
+      setTimeout(() => {
+        assert.isTrue(promise.state === 'rejected');
+        assert.isTrue(fail.calledOnce);
+        assert.isTrue(fail.calledWith('失败了'));
+        done();
+      }, 0);
+    });
+    promise.then(null, fail);
+  });
+  it('在执行上下文堆栈仅包含平台代码前（在我的代码执行完前），不得调用then的两个参数', (done) => {
+    const success = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    promise.then(success, null);
+    console.log(1);
+    assert.isFalse(success.called);
+    setTimeout(() => {
+      assert.isTrue(success.called);
+      done();
+    }, 0);
+  });
+  it('2.2.5 with no this value', (done) => {
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    promise.then(function () {
+      'use strict';
+      assert.isTrue(this === undefined);
+      done();
+    });
+  });
+  it('then可以被多次调用', (done) => {
+    const fn1 = sinon.fake();
+    const fn2 = sinon.fake();
+    const fn3 = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    promise.then(fn1);
+    promise.then(fn2);
+    promise.then(fn3);
+    setTimeout(() => {
+      assert.isTrue(fn1.called);
+      assert.isTrue(fn2.called);
+      assert.isTrue(fn3.called);
+      assert.isTrue(fn2.calledAfter(fn1));
+      assert.isTrue(fn3.calledAfter(fn2));
+      done();
+    }, 0);
+  });
+  it('then可以被多次调用rej', (done) => {
+    const fn1 = sinon.fake();
+    const fn2 = sinon.fake();
+    const fn3 = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      rej();
+    });
+    promise.then(null, fn1);
+    promise.then(null, fn2);
+    promise.then(null, fn3);
+    setTimeout(() => {
+      assert.isTrue(fn1.called);
+      assert.isTrue(fn2.called);
+      assert.isTrue(fn3.called);
+      assert.isTrue(fn2.calledAfter(fn1));
+      assert.isTrue(fn3.calledAfter(fn2));
+      done();
+    }, 0);
+  });
 });
