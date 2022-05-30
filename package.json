@@ -6,16 +6,19 @@
   "author": "sean <770899447@qq.com>",
   "license": "MIT",
   "scripts": {
-    "test": "mocha */test/**/*.js"
+    "tst": "mocha -r ts-node/register */test/**/*.ts",
+    "test": "mocha */test/**/*.ts"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "sinon": "^7.4.1",
     "sinon-chai": "^3.3.0"
   },
   "dependencies": {
-    "@types/chai": "^4.3.1",
-    "@types/mocha": "^9.1.1"
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
   }
 }
