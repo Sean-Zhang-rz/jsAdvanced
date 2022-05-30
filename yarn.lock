@@ -76,7 +76,7 @@
   "resolved" "https://registry.npmmirror.com/@tsconfig/node16/-/node16-1.0.2.tgz"
   "version" "1.0.2"
 
-"@types/chai@^4.3.1":
+"@types/chai@*", "@types/chai@^4.3.1":
   "integrity" "sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ=="
   "resolved" "https://registry.npmmirror.com/@types/chai/-/chai-4.3.1.tgz"
   "version" "4.3.1"
@@ -90,6 +90,26 @@
   "integrity" "sha512-V3orv+ggDsWVHP99K3JlwtH20R7J4IhI1Kksgc+64q5VxgfRkQG8Ws3MFm/FZOKDYGy9feGFlZ70/HpCNe9QaA=="
   "resolved" "https://registry.npmmirror.com/@types/node/-/node-17.0.36.tgz"
   "version" "17.0.36"
+
+"@types/sinon-chai@^3.2.8":
+  "integrity" "sha512-d4ImIQbT/rKMG8+AXpmcan5T2/PNeSjrYhvkwet6z0p8kzYtfgA32xzOBlbU0yqJfq+/0Ml805iFoODO0LP5/g=="
+  "resolved" "https://registry.npmmirror.com/@types/sinon-chai/-/sinon-chai-3.2.8.tgz"
+  "version" "3.2.8"
+  dependencies:
+    "@types/chai" "*"
+    "@types/sinon" "*"
+
+"@types/sinon@*", "@types/sinon@^10.0.11":
+  "integrity" "sha512-dmZsHlBsKUtBpHriNjlK0ndlvEh8dcb9uV9Afsbt89QIyydpC7NcR+nWlAhASfy3GHnxTl4FX/aKE7XZUt/B4g=="
+  "resolved" "https://registry.npmmirror.com/@types/sinon/-/sinon-10.0.11.tgz"
+  "version" "10.0.11"
+  dependencies:
+    "@types/sinonjs__fake-timers" "*"
+
+"@types/sinonjs__fake-timers@*":
+  "integrity" "sha512-9GcLXF0/v3t80caGs5p2rRfkB+a8VBGLJZVih6CNFkx8IZ994wiKKLSRs9nuFwk1HevWs/1mnUmkApGrSGsShA=="
+  "resolved" "https://registry.npmmirror.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-8.1.2.tgz"
+  "version" "8.1.2"
 
 "acorn-walk@^8.1.1":
   "integrity" "sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA=="
@@ -831,12 +851,12 @@
     "get-intrinsic" "^1.0.2"
     "object-inspect" "^1.9.0"
 
-"sinon-chai@^3.3.0":
+"sinon-chai@^3.7.0":
   "integrity" "sha512-mf5NURdUaSdnatJx3uhoBOrY9dtL19fiOtAdT1Azxg3+lNJFiuN0uzaU3xX1LeAfL17kHQhTAJgpsfhbMJMY2g=="
   "resolved" "https://registry.npmmirror.com/sinon-chai/-/sinon-chai-3.7.0.tgz"
   "version" "3.7.0"
 
-"sinon@^7.4.1", "sinon@>=4.0.0":
+"sinon@^7.5.0", "sinon@>=4.0.0":
   "integrity" "sha512-AoD0oJWerp0/rY9czP/D6hDTTUYGpObhZjMpd7Cl/A6+j0xBE+ayL/ldfggkBXUs0IkvIiM1ljM8+WkOc5k78Q=="
   "resolved" "https://registry.npmmirror.com/sinon/-/sinon-7.5.0.tgz"
   "version" "7.5.0"

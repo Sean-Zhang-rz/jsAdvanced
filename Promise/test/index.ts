@@ -49,8 +49,10 @@ describe('Promise', () => {
       // @ts-ignore
       assert(called === false);
       res();
-      // @ts-ignore
-      assert(called === true);
+      setTimeout(() => {
+        // @ts-ignore
+        assert(called === true);
+      });
     });
     // @ts-ignore
     promise.then(() => {

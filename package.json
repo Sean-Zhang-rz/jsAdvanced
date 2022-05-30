@@ -14,10 +14,12 @@
     "@types/mocha": "^9.1.1",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
-    "sinon": "^7.4.1",
-    "sinon-chai": "^3.3.0"
+    "sinon": "^7.5.0",
+    "sinon-chai": "^3.7.0"
   },
   "dependencies": {
+    "@types/sinon": "^10.0.11",
+    "@types/sinon-chai": "^3.2.8",
     "ts-node": "^10.8.0",
     "typescript": "^4.7.2"
   }
