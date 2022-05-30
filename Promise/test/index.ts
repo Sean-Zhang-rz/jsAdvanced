@@ -203,7 +203,6 @@ describe('Promise', () => {
         () => {}
       )
       .then(fn2);
-    done();
   });
   it('fn过程中失败', (done) => {
     const promise = new Promise2((res, rej) => {
@@ -217,7 +216,36 @@ describe('Promise', () => {
       }
     );
     done();
-    // @ts-ignore
-    // assert.isTrue(fn2.called);
+  });
+  it('then里面的两个函数是微任务', (done) => {
+    const fn1 = sinon.fake();
+    const fn2 = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    setTimeout(() => {
+      fn1();
+      assert.isTrue(fn2.called);
+    }, 0);
+    promise.then(() => {
+      fn2();
+      assert.isFalse(fn1.called);
+    });
+    done();
+  });
+  it('then后面的then接收前面then成功或者失败的返回值', (done) => {
+    const fn = (res) => {
+      assert.isTrue(res === '成功');
+    };
+    const promise = new Promise2((res, rej) => {
+      res('成功');
+    });
+    const promise2 = promise.then(fn);
+    assert.isTrue(promise2 instanceof Promise2);
+    setTimeout(() => {
+      // @ts-ignore
+      assert.isTrue(fn.called);
+      done();
+    }, 10);
   });
 });

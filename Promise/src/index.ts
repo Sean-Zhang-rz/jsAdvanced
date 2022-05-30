@@ -1,6 +1,6 @@
 class Promise2 {
-  succeed = null;
-  fail = null;
+  onResolve = null;
+  onRejected = null;
   state = 'pending';
   callbacks = [];
 
@@ -9,7 +9,10 @@ class Promise2 {
     this.state = 'fullfilled';
     queueMicrotask(() => {
       this.callbacks.forEach((handle) => {
-        if (handle.onResolve) handle.onResolve.call(undefined, result);
+        if (handle.onResolve) {
+          const x = handle.onResolve.call(undefined, result);
+          handle.handleNext.resolveWith(x);
+        }
       });
     });
   }
@@ -18,7 +21,10 @@ class Promise2 {
     this.state = 'rejected';
     queueMicrotask(() => {
       this.callbacks.forEach((handle) => {
-        if (handle.onRejected) handle.onRejected.call(undefined, reason);
+        if (handle.onRejected) {
+          const x = handle.onRejected.call(undefined, reason);
+          handle.handleNext.resolveWith(x);
+        }
       });
     });
   }
@@ -35,13 +41,56 @@ class Promise2 {
   }
   then(onResolve?, onRejected?) {
     const handle: {
-      onResolve?: () => void;
-      onRejected?: () => void;
+      onResolve?: () => Promise2;
+      onRejected?: () => Promise2;
+      handleNext?: Promise2;
     } = {};
     if (typeof onResolve === 'function') handle.onResolve = onResolve;
     if (typeof onRejected === 'function') handle.onRejected = onRejected;
+    handle.handleNext = new Promise2(() => {});
     this.callbacks.push(handle);
-    return new Promise2(() => {});
+    return handle.handleNext;
+  }
+  resolveWith(x) {
+    // x 和this不能是同一个引用
+    if (this === x) return this.reject(new TypeError());
+    // 如果then是promise
+    if (x instanceof Promise2) {
+      x.then(
+        (result) => {
+          this.resolve(result);
+        },
+        (reason) => {
+          this.reject(reason);
+        }
+      );
+    } else if (x instanceof Object) {
+      // let then be x.then, 且处理异常, 如果then可调用，就调用它
+      let then;
+      try {
+        then = x.then;
+      } catch (e) {
+        this.reject(e);
+      }
+      if (then instanceof Function) {
+        try {
+          x.call(
+            (y) => {
+              this.resolveWith(y);
+            },
+            (r) => {
+              this.reject(r);
+            }
+          );
+        } catch (e) {
+          this.reject(e);
+        }
+      } else {
+        this.resolve(x);
+      }
+    } else {
+      this.resolve(x);
+    }
   }
 }
 export default Promise2;
