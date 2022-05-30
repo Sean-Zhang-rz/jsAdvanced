@@ -65,4 +65,26 @@ describe('Promise', () => {
     });
     promise.then(null, fail);
   });
+  it('promise.then(success,fail)中的success,fail是函数', (done) => {
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    promise.then(false, null);
+    done();
+  });
+  it('promise success后状态变成fullfilled', (done) => {
+    const succeed = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      // assert.isTrue(promise.state === 'pending');
+      assert.isFalse(succeed.called);
+      res(233);
+      setTimeout(() => {
+        assert.isTrue(promise.state === 'fullfilled');
+        assert.isTrue(succeed.called);
+        assert.isTrue(succeed.calledWith(233));
+        done();
+      }, 0);
+    });
+    promise.then(succeed);
+  });
 });

@@ -2,14 +2,18 @@ class Promise2 {
   succeed = null;
   fail = null;
   state = 'pending';
-  res() {
+
+  res(result) {
     setTimeout(() => {
-      this.succeed();
+      this.state = 'fullfilled';
+
+      if (this.succeed) this.succeed(result);
     }, 0);
   }
-  rej() {
+  rej(reason) {
     setTimeout(() => {
-      this.fail();
+      this.state = 'rejected';
+      if (this.fail) this.fail(reason);
     }, 0);
   }
   constructor(fn) {
@@ -19,8 +23,8 @@ class Promise2 {
     fn(this.res.bind(this), this.rej.bind(this));
   }
   then(succeed?, fail?) {
-    this.succeed = succeed;
-    this.fail = fail;
+    if (typeof succeed === 'function') this.succeed = succeed;
+    if (typeof fail === 'function') this.fail = fail;
   }
 }
 export default Promise2;
