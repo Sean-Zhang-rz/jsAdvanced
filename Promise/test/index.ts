@@ -1,5 +1,9 @@
 import * as chai from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import Promise2 from '../src';
+
+chai.use(sinonChai);
 const assert = chai.assert;
 
 describe('Promise', () => {
@@ -26,37 +30,39 @@ describe('Promise', () => {
     assert.isFunction(promise.then);
   });
   it('fn立刻执行', () => {
-    let called = false;
-    const promise = new Promise2(() => {
-      called = true;
-    });
-    // @ts-ignore
-    assert(called === true);
+    let fn = sinon.fake();
+    new Promise2(fn);
+    assert.isTrue(fn.called);
   });
-  it('fn接受res和rej两个函数做参数', () => {
-    let called = false;
+  it('fn接受res和rej两个函数做参数', (done) => {
     const promise = new Promise2((res, rej) => {
-      called = true;
       assert.isFunction(res);
       assert.isFunction(rej);
+      done();
     });
-    // @ts-ignore
-    assert(called === true);
   });
-  it('promise.then(success)中的success会在res被调用的时候执行', () => {
-    let called = false;
+  it('promise.then(success)中的success会在res被调用的时候执行', (done) => {
+    const success = sinon.fake();
     const promise = new Promise2((res, rej) => {
-      // @ts-ignore
-      assert(called === false);
+      assert.isFalse(success.called);
       res();
       setTimeout(() => {
-        // @ts-ignore
-        assert(called === true);
+        assert.isTrue(success.called);
+        done();
       });
     });
-    // @ts-ignore
-    promise.then(() => {
-      called = true;
+    promise.then(success);
+  });
+  it('promise.then(null, fail)中的fail会在rej被调用的时候执行', (done) => {
+    const fail = sinon.fake();
+    const promise = new Promise2((res, rej) => {
+      assert.isFalse(fail.called);
+      rej();
+      setTimeout(() => {
+        assert.isTrue(fail.called);
+        done();
+      });
     });
+    promise.then(null, fail);
   });
 });

@@ -1,6 +1,7 @@
 class Promise2 {
   succeed = null;
   fail = null;
+  state = 'pending';
   res() {
     setTimeout(() => {
       this.succeed();
@@ -17,7 +18,7 @@ class Promise2 {
     }
     fn(this.res.bind(this), this.rej.bind(this));
   }
-  then(succeed, fail) {
+  then(succeed?, fail?) {
     this.succeed = succeed;
     this.fail = fail;
   }
