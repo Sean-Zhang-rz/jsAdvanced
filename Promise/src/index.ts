@@ -4,35 +4,44 @@ class Promise2 {
   state = 'pending';
   callbacks = [];
 
-  res(result) {
-    setTimeout(() => {
-      if (this.state !== 'pending') return;
-      this.state = 'fullfilled';
+  resolve(result) {
+    if (this.state !== 'pending') return;
+    this.state = 'fullfilled';
+    queueMicrotask(() => {
       this.callbacks.forEach((handle) => {
-        if (handle[0]) handle[0].call(undefined, result);
+        if (handle.onResolve) handle.onResolve.call(undefined, result);
       });
-    }, 0);
+    });
   }
-  rej(reason) {
-    setTimeout(() => {
-      if (this.state !== 'pending') return;
-      this.state = 'rejected';
+  reject(reason) {
+    if (this.state !== 'pending') return;
+    this.state = 'rejected';
+    queueMicrotask(() => {
       this.callbacks.forEach((handle) => {
-        if (handle[1]) handle[1].call(undefined, reason);
+        if (handle.onRejected) handle.onRejected.call(undefined, reason);
       });
-    }, 0);
+    });
   }
   constructor(fn) {
     if (typeof fn !== 'function') {
       throw new Error('Promise必须传入一个函数');
     }
-    fn(this.res.bind(this), this.rej.bind(this));
+    // 处理fn过程中的抛错
+    try {
+      fn(this.resolve.bind(this), this.reject.bind(this));
+    } catch (e) {
+      this.reject.bind(this, e);
+    }
   }
-  then(succeed?, fail?) {
-    const handle = [];
-    if (typeof succeed === 'function') handle[0] = succeed;
-    if (typeof fail === 'function') handle[1] = fail;
+  then(onResolve?, onRejected?) {
+    const handle: {
+      onResolve?: () => void;
+      onRejected?: () => void;
+    } = {};
+    if (typeof onResolve === 'function') handle.onResolve = onResolve;
+    if (typeof onRejected === 'function') handle.onRejected = onRejected;
     this.callbacks.push(handle);
+    return new Promise2(() => {});
   }
 }
 export default Promise2;

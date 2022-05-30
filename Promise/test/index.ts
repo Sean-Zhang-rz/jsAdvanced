@@ -178,4 +178,46 @@ describe('Promise', () => {
       done();
     }, 0);
   });
+  it('then必须返回一个promise', (done) => {
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    const promise2 = promise.then(
+      () => {},
+      () => {}
+    );
+    assert.isTrue(promise2 instanceof Promise2);
+    done();
+  });
+  it('then(success, fail)中的success返回一个值x，之后的promise接收其成功或者失败值', (done) => {
+    const fn2 = (res) => {
+      assert.equal(res, '成功');
+      done();
+    };
+    const promise = new Promise2((res, rej) => {
+      res();
+    });
+    const promise2 = promise
+      .then(
+        () => '成功',
+        () => {}
+      )
+      .then(fn2);
+    done();
+  });
+  it('fn过程中失败', (done) => {
+    const promise = new Promise2((res, rej) => {
+      throw new Error('123');
+      res();
+    });
+    promise.then(
+      () => '成功',
+      (e) => {
+        console.log(e);
+      }
+    );
+    done();
+    // @ts-ignore
+    // assert.isTrue(fn2.called);
+  });
 });
