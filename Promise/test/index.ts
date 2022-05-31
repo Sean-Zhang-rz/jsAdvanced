@@ -234,18 +234,15 @@ describe('Promise', () => {
     done();
   });
   it('then后面的then接收前面then成功或者失败的返回值', (done) => {
-    const fn = (res) => {
-      assert.isTrue(res === '成功');
-    };
+    const fn1 = sinon.fake();
     const promise = new Promise2((res, rej) => {
       res('成功');
     });
-    const promise2 = promise.then(fn);
-    assert.isTrue(promise2 instanceof Promise2);
+    const promise2 = promise.then(fn1, null);
     setTimeout(() => {
-      // @ts-ignore
-      assert.isTrue(fn.called);
+      assert.isTrue(fn1.called);
+      assert.isTrue(fn1.calledWith('成功'));
       done();
-    }, 10);
+    }, 0);
   });
 });

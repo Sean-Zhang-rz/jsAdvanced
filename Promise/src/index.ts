@@ -51,46 +51,64 @@ class Promise2 {
     this.callbacks.push(handle);
     return handle.handleNext;
   }
-  resolveWith(x) {
+
+  private resolveWith(x) {
     // x 和this不能是同一个引用
-    if (this === x) return this.reject(new TypeError());
-    // 如果then是promise
-    if (x instanceof Promise2) {
-      x.then(
-        (result) => {
-          this.resolve(result);
-        },
-        (reason) => {
-          this.reject(reason);
-        }
-      );
+    if (this === x) {
+      this.resolveSelf();
+    } else if (x instanceof Promise2) {
+      // 如果then是promise
+      this.resolvePromise(x);
     } else if (x instanceof Object) {
-      // let then be x.then, 且处理异常, 如果then可调用，就调用它
-      let then;
-      try {
-        then = x.then;
-      } catch (e) {
-        this.reject(e);
-      }
-      if (then instanceof Function) {
-        try {
-          x.call(
-            (y) => {
-              this.resolveWith(y);
-            },
-            (r) => {
-              this.reject(r);
-            }
-          );
-        } catch (e) {
-          this.reject(e);
-        }
-      } else {
-        this.resolve(x);
-      }
+      this.resolveObject(x);
     } else {
       this.resolve(x);
     }
+  }
+  private resolveSelf() {
+    return this.reject(new TypeError());
+  }
+  resolvePromise(x) {
+    x.then(
+      (result) => {
+        this.resolve(result);
+      },
+      (reason) => {
+        this.reject(reason);
+      }
+    );
+  }
+  resolveObject(x) {
+    const then = this.getThen(x);
+    if (then instanceof Function) {
+      this.resolveThenable(x);
+    } else {
+      this.resolve(x);
+    }
+  }
+  private resolveThenable(x) {
+    try {
+      x.call(
+        (y) => {
+          this.resolveWith(y);
+        },
+        (r) => {
+          this.reject(r);
+        }
+      );
+    } catch (e) {
+      this.reject(e);
+    }
+  }
+  private getThen(x) {
+    let then;
+    try {
+      // let then be x.then, 且处理异常, 如果then可调用，就调用它
+      then = x.then;
+    } catch (e) {
+      return this.reject(e);
+    }
+    return then;
   }
 }
 export default Promise2;
