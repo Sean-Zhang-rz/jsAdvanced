@@ -1,13 +1,20 @@
 class _Promise {
-  state = 'pending';
-  handler = {
+  state: 'pending' | 'fullfilled' | 'rejected' = 'pending';
+  handler: {
+    onResolve: (res) => void;
+    onReject: (rej) => void;
+  } = {
     onResolve: (res) => {},
     onReject: (rej) => {},
   };
 
   constructor(fn) {
     if (typeof fn !== 'function') throw new Error('Promise必须传入一个函数');
-    fn(this.resolve, this.reject);
+    try {
+      fn(this.resolve.bind(this), this.reject.bind(this));
+    } catch (err) {
+      this.reject.call(this, err.message);
+    }
   }
 
   resolve(result) {
@@ -28,12 +35,21 @@ class _Promise {
     if (typeof onResolve === 'function') this.handler.onResolve = onResolve;
     if (typeof onReject === 'function') this.handler.onReject = onReject;
   }
+  catch(onReject?) {
+    this.then(null, onReject);
+  }
 }
 
 const p1 = new _Promise((res, rej) => {
-  // console.log(1);
-  res(1);
+  // res(1);
+  throw Error('12121');
 });
-// p1.then((res) => {
-//   console.log(res);
-// });
+
+p1.then(
+  (res) => {
+    console.log(res);
+  },
+  (rej) => {
+    console.log(rej);
+  }
+);
