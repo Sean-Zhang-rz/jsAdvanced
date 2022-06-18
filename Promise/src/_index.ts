@@ -1,10 +1,10 @@
 interface handlerProps {
   onResolve: (res) => void;
   onReject: (rej) => void;
-  handleNext: _Promise;
+  handleNext: Promise2;
 }
 type State = 'pending' | 'fullfilled' | 'rejected';
-class _Promise {
+export default class Promise2 {
   state: State = 'pending';
   callbacks: handlerProps[] = [];
 
@@ -16,14 +16,13 @@ class _Promise {
       this.reject.call(this, err.message);
     }
   }
-
   resolve(result) {
     if (this.state !== 'pending') return;
     this.state = 'fullfilled';
     queueMicrotask(() => {
       this.callbacks.forEach((cb) => {
         if (cb.onResolve) {
-          const x = cb.onResolve(result);
+          const x = cb.onResolve.call(undefined, result);
           // 执行next
           cb.handleNext.resolve(x);
         }
@@ -36,7 +35,7 @@ class _Promise {
     queueMicrotask(() => {
       this.callbacks.forEach((cb) => {
         if (cb.onReject) {
-          const x = cb.onReject(reason);
+          const x = cb.onReject.call(undefined, reason);
           // 执行next
           cb.handleNext.reject(x);
         }
@@ -47,7 +46,7 @@ class _Promise {
     const handler: handlerProps = {
       onResolve: (res) => {},
       onReject: (rej) => {},
-      handleNext: new _Promise(() => {}),
+      handleNext: new Promise2(() => {}),
     };
     if (typeof onResolve === 'function') handler.onResolve = onResolve;
     if (typeof onReject === 'function') handler.onReject = onReject;
@@ -58,21 +57,3 @@ class _Promise {
     this.then(null, onReject);
   }
 }
-
-const p1 = new _Promise((res, rej) => {
-  res(1);
-  // throw Error('12121');
-});
-
-p1.then((res) => {
-  console.log(res);
-  return 2;
-})
-  .then((res) => {
-    console.log(2);
-    console.log(res);
-  })
-  .then((res) => {
-    console.log(3);
-    console.log(res);
-  });
