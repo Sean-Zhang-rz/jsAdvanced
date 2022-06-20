@@ -3,6 +3,6 @@ import b from './b.js'
 
 const a = {
   value: 1,
-  value2: a2
+  value2: b
 }
 export default a
