@@ -4,7 +4,8 @@ interface handlerProps {
   handleNext: Promise2;
 }
 
-type PromiseArray = Promise2[]
+type PromiseArray = Promise2[];
+
 type State = 'pending' | 'fullfilled' | 'rejected';
 class Promise2 {
   state: State = 'pending';
@@ -58,13 +59,24 @@ class Promise2 {
   catch(onReject?) {
     this.then(null, onReject);
   }
-  static all(array: PromiseArray){
-    if (!array.length) return
-    const arr = []
-    let count = 0
-    return new Promise2((res, rej) => {
+  static all(array: PromiseArray) {
+    if (!array.length) return;
+    const allFullfilled = [];
+    let failReason;
+    failReason = array.forEach((a) => {
+      a.then(
+        (res) => {
+          allFullfilled.push(res);
+        },
+        (rej) => {
+          failReason = rej;
+        }
+      );
+    });
 
-    })
+    return new Promise2((res, rej) => {
+      failReason ? rej(failReason) : res(allFullfilled);
+    });
   }
   resolveWith(x) {
     if (x instanceof Promise2) {
@@ -95,22 +107,21 @@ function nextTick(fn) {
     textNode.data = String(counter);
   }
 }
+const p1 = new Promise2((res) => {
+  res('ok');
+});
+const p2 = new Promise2((res, rej) => {
+  rej('fail');
+});
 
-// const p1 = new Promise2((res)=>{
-//   res(new Promise2((res)=>{
-//     res('ok')
-//   }))
-// })
-// p1.then(res=>{
-//   console.log(res);
-// })
-// const p2 = new Promise2((res,rej)=>{
-//   res('ok2')
-// })
-
-// const p3 = Promise2.all([p1, p2])
-// // @ts-ignore
-// p3.then((res,rej)=>{
-//   console.log(res);  
-// })
-export default Promise2
+const p3 = Promise2.all([p1, p2]);
+// @ts-ignore
+p3.then(
+  (res) => {
+    console.log(res);
+  },
+  (rej) => {
+    console.log(rej);
+  }
+);
+export default Promise2;
