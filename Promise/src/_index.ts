@@ -19,16 +19,14 @@ class Promise2 {
     }
   }
   resolve(result) {
-    console.log('resolve了');
-    
     if (this.state !== 'pending') return;
     this.state = 'fullfilled';
-    queueMicrotask(() => {
+    nextTick(() => {
       this.callbacks.forEach((cb) => {
         if (cb.onResolve) {
           const x = cb.onResolve.call(undefined, result);
           // 执行next
-          cb.handleNext.resolve(x);
+          cb.handleNext.resolveWith(x);
         }
       });
     });
@@ -36,12 +34,12 @@ class Promise2 {
   reject(reason) {
     if (this.state !== 'pending') return;
     this.state = 'rejected';
-    queueMicrotask(() => {
+    nextTick(() => {
       this.callbacks.forEach((cb) => {
         if (cb.onReject) {
           const x = cb.onReject.call(undefined, reason);
           // 执行next
-          cb.handleNext.reject(x);
+          cb.handleNext.resolveWith(x);
         }
       });
     });
@@ -62,24 +60,57 @@ class Promise2 {
   }
   static all(array: PromiseArray){
     if (!array.length) return
-    const index = array.findIndex(a => a.state!=='fullfilled')
-    return new Promise2((res, rej)=>{
-      // index === -1 ? res() : rej()
+    const arr = []
+    let count = 0
+    return new Promise2((res, rej) => {
+
     })
+  }
+  resolveWith(x) {
+    if (x instanceof Promise2) {
+      x.then((result)=>{
+        this.resolve(result)
+      },(reason)=>{
+        this.reject(reason)
+      })
+    }else {
+      this.resolve(x)
+    }
   }
 }
 const p1 = new Promise2((res)=>{
-  res('ok')
+  res(new Promise2((res)=>{
+    res('ok')
+  }))
 })
-const p2 = new Promise2((res,rej)=>{
-  res('ok2')
-})
-
-const p3 = Promise2.all([p1, p2])
-// @ts-ignore
-p3.then((res,rej)=>{
+p1.then(res=>{
   console.log(res);
-  // console.log(rej);
-  
 })
+// const p2 = new Promise2((res,rej)=>{
+//   res('ok2')
+// })
+
+// const p3 = Promise2.all([p1, p2])
+// // @ts-ignore
+// p3.then((res,rej)=>{
+//   console.log(res);  
+// })
+
+
+function nextTick(fn) {
+  if (process !== undefined && typeof process.nextTick === "function") {
+    return process.nextTick(fn);
+  } else {
+    var counter = 1;
+    var observer = new MutationObserver(fn);
+    var textNode = document.createTextNode(String(counter));
+
+    observer.observe(textNode, {
+      characterData: true
+    });
+
+    counter = counter + 1;
+    textNode.data = String(counter);
+  }
+}
 export default Promise2
