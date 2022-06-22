@@ -78,24 +78,6 @@ class Promise2 {
     }
   }
 }
-const p1 = new Promise2((res)=>{
-  res(new Promise2((res)=>{
-    res('ok')
-  }))
-})
-p1.then(res=>{
-  console.log(res);
-})
-// const p2 = new Promise2((res,rej)=>{
-//   res('ok2')
-// })
-
-// const p3 = Promise2.all([p1, p2])
-// // @ts-ignore
-// p3.then((res,rej)=>{
-//   console.log(res);  
-// })
-
 
 function nextTick(fn) {
   if (process !== undefined && typeof process.nextTick === "function") {
@@ -113,4 +95,22 @@ function nextTick(fn) {
     textNode.data = String(counter);
   }
 }
+
+// const p1 = new Promise2((res)=>{
+//   res(new Promise2((res)=>{
+//     res('ok')
+//   }))
+// })
+// p1.then(res=>{
+//   console.log(res);
+// })
+// const p2 = new Promise2((res,rej)=>{
+//   res('ok2')
+// })
+
+// const p3 = Promise2.all([p1, p2])
+// // @ts-ignore
+// p3.then((res,rej)=>{
+//   console.log(res);  
+// })
 export default Promise2
