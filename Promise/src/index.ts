@@ -16,15 +16,18 @@ class Promise2 {
   }
 
   resolve(result) {
-    console.log('resolve');
-    
     if (this.PromiseState === 'pending') {
       nextTick(() => {
         this.PromiseState = 'fullfilled';
-        this.PromiseResult = result;        
-        this.onFulfilledCallbacks.forEach(callback => {
-          callback(result)
-        })
+        this.PromiseResult = result;     
+        if (this.onFulfilledCallbacks?.length) {
+          this.onFulfilledCallbacks.forEach(callback => {
+            console.log('result',result);
+            console.log('callback', callback);
+            
+            callback(result)
+          })
+        }
       });
     }
   }
@@ -34,13 +37,15 @@ class Promise2 {
       nextTick(() => {
         this.PromiseState = 'rejected';
         this.PromiseResult = reason;
-        this.onRejectedCallbacks.forEach(callback => {
-          callback(reason)
-        })
+        if (this.onRejectedCallbacks?.length) {
+          this.onRejectedCallbacks.forEach(callback => {
+            callback(reason)
+          })
+        }
       });
     }
   }
-
+  
   /**
    * [注册fulfilled状态/rejected状态对应的回调函数] 
    * @param {function} onFulfilled  fulfilled状态时 执行的函数
@@ -54,7 +59,6 @@ class Promise2 {
     };
 
     let promise2 = new Promise2((resolve, reject) => {
-      console.log(this.PromiseState);
       if (this.PromiseState === 'fullfilled') {
         nextTick(() => {
           try {
@@ -111,12 +115,16 @@ function resolvePromise(promise2, x, resolve, reject) {
 
   if (x instanceof Promise2) {
     if (x.PromiseState === 'pending') {
+      console.log('pending');
+      
       x.then(y => {
         resolvePromise(promise2, y, resolve, reject)
       }, reject);
     } else if (x.PromiseState === 'fullfilled') {
+      console.log('fullfilled');
       resolve(x.PromiseResult);
     } else if (x.PromiseState === 'rejected') {
+      console.log('rejetced');
       reject(x.PromiseResult);
     }
   } else if (x !== null && ((typeof x === 'object' || (typeof x === 'function')))) {
@@ -171,6 +179,22 @@ function nextTick(fn) {
     textNode.data = String(counter);
   }
 }
+const p1 = new Promise2((res)=>{
+  res(new Promise2(res2=>{
+    res2('ok')
+  }))
+})
+p1.then(res=>{
+  console.log(res);
+  
+})
+// const p2 = new Promise2((res)=>{
+//   res('ok')
+// })
+// p2.then(res=>{
+//   console.log(res);
+  
+// })
 // @ts-ignore
 Promise2.deferred = function () {
   let result = {};
@@ -183,11 +207,4 @@ Promise2.deferred = function () {
   });
   return result;
 }
-const p1 = new Promise2((res,rej)=>{
-  res('ok')
-})
-p1.then(res=>{
-  console.log(res);
-  
-})
 module.exports = Promise2;

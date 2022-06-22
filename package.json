@@ -8,7 +8,7 @@
   "scripts": {
     "tst": "mocha -r ts-node/register */test/**/*.ts",
     "test": "mocha */test/**/*.ts",
-    "testp": "promises-aplus-tests Promise/src/index2"
+    "testp": "promises-aplus-tests Promise/src/index"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
