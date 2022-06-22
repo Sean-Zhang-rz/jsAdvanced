@@ -68,20 +68,18 @@ class Promise2 {
     })
   }
 }
-const p1 = new Promise((res)=>{
-  console.log('--------------');
+const p1 = new Promise2((res)=>{
   res('ok')
 })
-// const p2 = new Promise((res,rej)=>{
-//   console.log(2);
-//   rej()
-// })
+const p2 = new Promise2((res,rej)=>{
+  res('ok2')
+})
 
-// const p3 = Promise.all([p1, p2])
-// // @ts-ignore
-// p3.then((res,rej)=>{
-//   console.log(res);
-//   console.log(rej);
+const p3 = Promise2.all([p1, p2])
+// @ts-ignore
+p3.then((res,rej)=>{
+  console.log(res);
+  // console.log(rej);
   
-// })
-export default Promise
+})
+export default Promise2
