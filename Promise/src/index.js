@@ -1,12 +1,9 @@
-type Status = 'pending' | 'fullfilled' | 'rejected';
-
 class Promise2 {
-  PromiseState: Status = 'pending'
-  PromiseResult: unknown = null
-  onFulfilledCallbacks = []
-  onRejectedCallbacks = []
-
-  constructor(func: (resolve: (result: unknown) => void, reject: (reason?: any) => void) => void) {
+  constructor(func) {
+    this.PromiseState = 'pending'
+    this.PromiseResult = null
+    this.onFulfilledCallbacks = []
+    this.onRejectedCallbacks = []
     if (typeof func !== 'function') throw new Error('Promise必须传入一个函数');
     try {
       func(this.resolve.bind(this), this.reject.bind(this));
@@ -19,12 +16,9 @@ class Promise2 {
     if (this.PromiseState === 'pending') {
       nextTick(() => {
         this.PromiseState = 'fullfilled';
-        this.PromiseResult = result;     
-        if (this.onFulfilledCallbacks?.length) {
+        this.PromiseResult = result;
+        if (this.onFulfilledCallbacks.length) {
           this.onFulfilledCallbacks.forEach(callback => {
-            console.log('result',result);
-            console.log('callback', callback);
-            
             callback(result)
           })
         }
@@ -37,7 +31,7 @@ class Promise2 {
       nextTick(() => {
         this.PromiseState = 'rejected';
         this.PromiseResult = reason;
-        if (this.onRejectedCallbacks?.length) {
+        if (this.onRejectedCallbacks.length) {
           this.onRejectedCallbacks.forEach(callback => {
             callback(reason)
           })
@@ -45,14 +39,8 @@ class Promise2 {
       });
     }
   }
-  
-  /**
-   * [注册fulfilled状态/rejected状态对应的回调函数] 
-   * @param {function} onFulfilled  fulfilled状态时 执行的函数
-   * @param {function} onRejected  rejected状态时 执行的函数 
-   * @returns {function} newPromsie  返回一个新的promise对象
-   */
-  then(onFulfilled?, onRejected?) {
+ 
+  then(onFulfilled, onRejected) {
     onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
     onRejected = typeof onRejected === 'function' ? onRejected : reason => {
       throw reason;
@@ -60,6 +48,7 @@ class Promise2 {
 
     let promise2 = new Promise2((resolve, reject) => {
       if (this.PromiseState === 'fullfilled') {
+        console.log('--------fullfilled');
         nextTick(() => {
           try {
             let x = onFulfilled(this.PromiseResult);
@@ -69,6 +58,7 @@ class Promise2 {
           }
         });
       } else if (this.PromiseState === 'rejected') {
+        console.log('--------rejected');
         nextTick(() => {
           try {
             let x = onRejected(this.PromiseResult);
@@ -78,6 +68,7 @@ class Promise2 {
           }
         });
       } else if (this.PromiseState === 'pending') {
+        console.log('---------pending');
         this.onFulfilledCallbacks.push(() => {
           try {
             let x = onFulfilled(this.PromiseResult);
@@ -102,55 +93,13 @@ class Promise2 {
   catch(onRejected) {
     this.then(null, onRejected)
   }
-  finally(cb){
-    this.then(cb, cb)
-  }
-  static resolve(result) {
-    if (result instanceof Promise2) {
-      return result
-    } else if (result instanceof Object && 'then' in result) {
-      return new Promise2((res, rej) => {
-        result.then(res, rej)
-      })
-    }else {
-      return new Promise2((res) => {
-        res(result)
-      })
-    }
-  }
-  static reject(reason) {
-    return new Promise2((res, rej)=>{
-      rej(reason)
-    })
-  }
-  static all(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return Promise2.resolve(promises)
-    return new Promise((resolve, reject)=>{
-      const result = []
-      let count = 0
-      promises.forEach((p, index) => {
-        Promise2.resolve(p).then((res) => {
-          result[index] = res
-          count += 1
-          if (count === promises.length) resolve(res)
-        }, (rej) => {
-          reject(rej)
-        })
-      })
-    })
-  }
 }
 
 function resolvePromise(promise2, x, resolve, reject) {
-  if (x === promise2) {
-    return reject(new TypeError('Chaining cycle detected for promise'));
-  }
+  if (x === promise2) return reject(new TypeError('Chaining cycle detected for promise'));
 
   if (x instanceof Promise2) {
     if (x.PromiseState === 'pending') {
-      console.log('pending');
-      
       x.then(y => {
         resolvePromise(promise2, y, resolve, reject)
       }, reject);
@@ -213,30 +162,30 @@ function nextTick(fn) {
     textNode.data = String(counter);
   }
 }
-const p1 = new Promise2((res)=>{
-  res(new Promise2(res2=>{
-    res2('ok')
-  }))
-})
-p1.then(res=>{
-  console.log(res);
-  
-})
-// const p2 = new Promise2((res)=>{
-//   res('ok')
+
+// const p1 = new Promise2((res,rej) => {
+//   rej(Promise.resolve('ok'))
 // })
-// p2.then(res=>{
+// p1.then(res => {
 //   console.log(res);
-  
+// }, rej => {
+//   console.log(rej);
 // })
-// @ts-ignore
+const p2 = new Promise2((res)=>{
+  res('ok')
+})
+p2.then(res=>{
+  console.log(res);
+  return 'ok2'
+}).then(res=>{
+  console.log(res);
+}, rej=>{
+  console.log(rej);
+})
 Promise2.deferred = function () {
   let result = {};
-  // @ts-ignore
   result.promise = new Promise2((resolve, reject) => {
-    // @ts-ignore
     result.resolve = resolve;
-    // @ts-ignore
     result.reject = reject;
   });
   return result;
