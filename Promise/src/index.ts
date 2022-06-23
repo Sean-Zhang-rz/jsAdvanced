@@ -97,45 +97,48 @@ class Promise2 {
     return promise2;
   }
   catch(onRejected) {
-    this.then(null, onRejected)
+    this.then(null, onRejected);
   }
-  finally(cb){
-    this.then(cb, cb)
+  finally(cb) {
+    this.then(cb, cb);
   }
   static resolve(result) {
     if (result instanceof Promise2) {
-      return result
+      return result;
     } else if (result instanceof Object && 'then' in result) {
       return new Promise2((res, rej) => {
-        result.then(res, rej)
-      })
-    }else {
+        result.then(res, rej);
+      });
+    } else {
       return new Promise2((res) => {
-        res(result)
-      })
+        res(result);
+      });
     }
   }
   static reject(reason) {
-    return new Promise2((res, rej)=>{
-      rej(reason)
-    })
+    return new Promise2((res, rej) => {
+      rej(reason);
+    });
   }
   static all(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return Promise2.resolve(promises)
-    return new Promise((resolve, reject)=>{
-      const result = []
-      let count = 0
+    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!promises.length) return Promise2.resolve(promises);
+    return new Promise((resolve, reject) => {
+      const result = [];
+      let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then((res) => {
-          result[index] = res
-          count += 1
-          if (count === promises.length) resolve(res)
-        }, (rej) => {
-          reject(rej)
-        })
-      })
-    })
+        Promise2.resolve(p).then(
+          (res) => {
+            result[index] = res;
+            count += 1;
+            if (count === promises.length) resolve(res);
+          },
+          (rej) => {
+            reject(rej);
+          }
+        );
+      });
+    });
   }
 }
 
