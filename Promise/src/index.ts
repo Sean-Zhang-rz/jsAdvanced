@@ -1,17 +1,17 @@
 type Status = 'pending' | 'fullfilled' | 'rejected';
 
 class Promise2 {
-  PromiseState: Status = 'pending'
-  PromiseResult: unknown = null
-  onFulfilledCallbacks = []
-  onRejectedCallbacks = []
+  PromiseState: Status = 'pending';
+  PromiseResult: unknown = null;
+  onFulfilledCallbacks = [];
+  onRejectedCallbacks = [];
 
   constructor(func: (resolve: (result: unknown) => void, reject: (reason?: any) => void) => void) {
     if (typeof func !== 'function') throw new Error('Promise必须传入一个函数');
     try {
       func(this.resolve.bind(this), this.reject.bind(this));
     } catch (error) {
-      this.reject.call(this, error)
+      this.reject.call(this, error);
     }
   }
 
@@ -19,14 +19,14 @@ class Promise2 {
     if (this.PromiseState === 'pending') {
       nextTick(() => {
         this.PromiseState = 'fullfilled';
-        this.PromiseResult = result;     
+        this.PromiseResult = result;
         if (this.onFulfilledCallbacks?.length) {
-          this.onFulfilledCallbacks.forEach(callback => {
-            console.log('result',result);
+          this.onFulfilledCallbacks.forEach((callback) => {
+            console.log('result', result);
             console.log('callback', callback);
-            
-            callback(result)
-          })
+
+            callback(result);
+          });
         }
       });
     }
@@ -38,25 +38,22 @@ class Promise2 {
         this.PromiseState = 'rejected';
         this.PromiseResult = reason;
         if (this.onRejectedCallbacks?.length) {
-          this.onRejectedCallbacks.forEach(callback => {
-            callback(reason)
-          })
+          this.onRejectedCallbacks.forEach((callback) => {
+            callback(reason);
+          });
         }
       });
     }
   }
-  
-  /**
-   * [注册fulfilled状态/rejected状态对应的回调函数] 
-   * @param {function} onFulfilled  fulfilled状态时 执行的函数
-   * @param {function} onRejected  rejected状态时 执行的函数 
-   * @returns {function} newPromsie  返回一个新的promise对象
-   */
+
   then(onFulfilled?, onRejected?) {
-    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
-    onRejected = typeof onRejected === 'function' ? onRejected : reason => {
-      throw reason;
-    };
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    onRejected =
+      typeof onRejected === 'function'
+        ? onRejected
+        : (reason) => {
+            throw reason;
+          };
 
     let promise2 = new Promise2((resolve, reject) => {
       if (this.PromiseState === 'fullfilled') {
@@ -74,14 +71,14 @@ class Promise2 {
             let x = onRejected(this.PromiseResult);
             resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
         });
       } else if (this.PromiseState === 'pending') {
         this.onFulfilledCallbacks.push(() => {
           try {
             let x = onFulfilled(this.PromiseResult);
-            resolvePromise(promise2, x, resolve, reject)
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
             reject(e);
           }
@@ -95,19 +92,12 @@ class Promise2 {
           }
         });
       }
-    })
+    });
 
-    return promise2
+    return promise2;
   }
 }
 
-/**
- * 对resolve()、reject() 进行改造增强 针对resolve()和reject()中不同值情况 进行处理
- * @param  {promise} promise2 promise1.then方法返回的新的promise对象
- * @param  {[type]} x         promise1中onFulfilled或onRejected的返回值
- * @param  {[type]} resolve   promise2的resolve方法
- * @param  {[type]} reject    promise2的reject方法
- */
 function resolvePromise(promise2, x, resolve, reject) {
   if (x === promise2) {
     return reject(new TypeError('Chaining cycle detected for promise'));
@@ -116,9 +106,9 @@ function resolvePromise(promise2, x, resolve, reject) {
   if (x instanceof Promise2) {
     if (x.PromiseState === 'pending') {
       console.log('pending');
-      
-      x.then(y => {
-        resolvePromise(promise2, y, resolve, reject)
+
+      x.then((y) => {
+        resolvePromise(promise2, y, resolve, reject);
       }, reject);
     } else if (x.PromiseState === 'fullfilled') {
       console.log('fullfilled');
@@ -127,7 +117,7 @@ function resolvePromise(promise2, x, resolve, reject) {
       console.log('rejetced');
       reject(x.PromiseResult);
     }
-  } else if (x !== null && ((typeof x === 'object' || (typeof x === 'function')))) {
+  } else if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
     try {
       var then = x.then;
     } catch (e) {
@@ -139,17 +129,17 @@ function resolvePromise(promise2, x, resolve, reject) {
       try {
         then.call(
           x,
-          y => {
+          (y) => {
             if (called) return;
             called = true;
             resolvePromise(promise2, y, resolve, reject);
           },
-          r => {
+          (r) => {
             if (called) return;
             called = true;
             reject(r);
           }
-        )
+        );
       } catch (e) {
         if (called) return;
         called = true;
@@ -164,7 +154,7 @@ function resolvePromise(promise2, x, resolve, reject) {
   }
 }
 function nextTick(fn) {
-  if (process !== undefined && typeof process.nextTick === "function") {
+  if (process !== undefined && typeof process.nextTick === 'function') {
     return process.nextTick(fn);
   } else {
     var counter = 1;
@@ -172,28 +162,29 @@ function nextTick(fn) {
     var textNode = document.createTextNode(String(counter));
 
     observer.observe(textNode, {
-      characterData: true
+      characterData: true,
     });
 
     counter = counter + 1;
     textNode.data = String(counter);
   }
 }
-const p1 = new Promise2((res)=>{
-  res(new Promise2(res2=>{
-    res2('ok')
-  }))
-})
-p1.then(res=>{
+const p1 = new Promise2((res) => {
+  res(
+    new Promise2((res2) => {
+      res2('ok');
+    })
+  );
+});
+p1.then((res) => {
   console.log(res);
-  
-})
+});
 // const p2 = new Promise2((res)=>{
 //   res('ok')
 // })
 // p2.then(res=>{
 //   console.log(res);
-  
+
 // })
 // @ts-ignore
 Promise2.deferred = function () {
@@ -206,5 +197,5 @@ Promise2.deferred = function () {
     result.reject = reject;
   });
   return result;
-}
+};
 module.exports = Promise2;
