@@ -1,14 +1,14 @@
 class Promise2 {
   constructor(func) {
-    this.PromiseState = 'pending'
-    this.PromiseResult = null
-    this.onFulfilledCallbacks = []
-    this.onRejectedCallbacks = []
+    this.PromiseState = 'pending';
+    this.PromiseResult = null;
+    this.onFulfilledCallbacks = [];
+    this.onRejectedCallbacks = [];
     if (typeof func !== 'function') throw new Error('Promise必须传入一个函数');
     try {
       func(this.resolve.bind(this), this.reject.bind(this));
     } catch (error) {
-      this.reject.call(this, error)
+      this.reject.call(this, error);
     }
   }
 
@@ -18,9 +18,9 @@ class Promise2 {
         this.PromiseState = 'fullfilled';
         this.PromiseResult = result;
         if (this.onFulfilledCallbacks.length) {
-          this.onFulfilledCallbacks.forEach(callback => {
-            callback(result)
-          })
+          this.onFulfilledCallbacks.forEach((callback) => {
+            callback(result);
+          });
         }
       });
     }
@@ -32,19 +32,22 @@ class Promise2 {
         this.PromiseState = 'rejected';
         this.PromiseResult = reason;
         if (this.onRejectedCallbacks.length) {
-          this.onRejectedCallbacks.forEach(callback => {
-            callback(reason)
-          })
+          this.onRejectedCallbacks.forEach((callback) => {
+            callback(reason);
+          });
         }
       });
     }
   }
- 
+
   then(onFulfilled, onRejected) {
-    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
-    onRejected = typeof onRejected === 'function' ? onRejected : reason => {
-      throw reason;
-    };
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    onRejected =
+      typeof onRejected === 'function'
+        ? onRejected
+        : (reason) => {
+            throw reason;
+          };
 
     let promise2 = new Promise2((resolve, reject) => {
       if (this.PromiseState === 'fullfilled') {
@@ -64,7 +67,7 @@ class Promise2 {
             let x = onRejected(this.PromiseResult);
             resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
-            reject(e)
+            reject(e);
           }
         });
       } else if (this.PromiseState === 'pending') {
@@ -72,7 +75,7 @@ class Promise2 {
         this.onFulfilledCallbacks.push(() => {
           try {
             let x = onFulfilled(this.PromiseResult);
-            resolvePromise(promise2, x, resolve, reject)
+            resolvePromise(promise2, x, resolve, reject);
           } catch (e) {
             reject(e);
           }
@@ -86,104 +89,112 @@ class Promise2 {
           }
         });
       }
-    })
+    });
 
-    return promise2
+    return promise2;
   }
   catch(onRejected) {
-    this.then(null, onRejected)
+    this.then(null, onRejected);
   }
   finally(cb) {
-    this.then(cb, cb)
+    this.then(cb, cb);
   }
   static resolve(result) {
     if (result instanceof Promise2) {
-      return result
+      return result;
     } else if (result instanceof Object && 'then' in result) {
       return new Promise2((res, rej) => {
-        result.then(res, rej)
-      })
+        result.then(res, rej);
+      });
     } else {
       return new Promise2((res) => {
-        res(result)
-      })
+        res(result);
+      });
     }
   }
   static reject(reason) {
     return new Promise2((res, rej) => {
-      rej(reason)
-    })
+      rej(reason);
+    });
   }
   static all(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return Promise2.resolve(promises)
+    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!promises.length) return Promise2.resolve(promises);
     return new Promise2((resolve, reject) => {
-      const result = []
-      let count = 0
+      const result = [];
+      let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then((res) => {
-          result[index] = res
-          count += 1
-          if (count === promises.length) resolve(result)
-        }, (rej) => {
-          reject(rej)
-        })
-      })
-    })
+        Promise2.resolve(p).then(
+          (res) => {
+            result[index] = res;
+            count += 1;
+            if (count === promises.length) resolve(result);
+          },
+          (rej) => {
+            reject(rej);
+          }
+        );
+      });
+    });
   }
   static allSettled(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return Promise2.resolve(promises)
+    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!promises.length) return Promise2.resolve(promises);
     return new Promise2((resolve, reject) => {
-      const result = []
-      let count = 0
+      const result = [];
+      let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then((res) => {
-          const obj = {
-            status: 'fullfilled',
-            value: res
+        Promise2.resolve(p).then(
+          (res) => {
+            const obj = {
+              status: 'fullfilled',
+              value: res,
+            };
+            result[index] = obj;
+            count += 1;
+            if (count === promises.length) resolve(result);
+          },
+          (rej) => {
+            const obj = {
+              status: 'rejected',
+              value: rej,
+            };
+            result[index] = obj;
+            count += 1;
+            if (count === promises.length) resolve(result);
           }
-          result[index] = obj
-          count += 1
-          if (count === promises.length) resolve(result)
-        }, (rej) => {
-          const obj = {
-            status: 'rejected',
-            value: rej
-          }
-          result[index] = obj
-          count += 1
-          if (count === promises.length) resolve(result)
-        })
-      })
-    })
+        );
+      });
+    });
   }
   static any(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return Promise2.reject('All promises were rejected')
+    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!promises.length) return Promise2.reject('All promises were rejected');
     return new Promise2((resolve, reject) => {
-      const error = []
-      let count = 0
+      const error = [];
+      let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then((res) => {
-          resolve(res)
-        }, (rej) => {
-          count += 1
-          error[index] = rej
-          count += 1
-          if (count === promises.length) reject('All promises were rejected')
-        })
-      })
-    })
+        Promise2.resolve(p).then(
+          (res) => {
+            resolve(res);
+          },
+          (rej) => {
+            count += 1;
+            error[index] = rej;
+            if (count === promises.length) reject('All promises were rejected');
+          }
+        );
+      });
+    });
   }
   static race(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable')
-    if (!promises.length) return new Promise2(() => { })
+    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!promises.length) return new Promise2(() => {});
     return new Promise2((resolve, reject) => {
-      promises.forEach(p => {
-        Promise2.resolve(p).then(resolve, reject)
-      })
-    })
+      promises.forEach((p) => {
+        Promise2.resolve(p).then(resolve, reject);
+      });
+    });
   }
 }
 
@@ -192,8 +203,8 @@ function resolvePromise(promise2, x, resolve, reject) {
 
   if (x instanceof Promise2) {
     if (x.PromiseState === 'pending') {
-      x.then(y => {
-        resolvePromise(promise2, y, resolve, reject)
+      x.then((y) => {
+        resolvePromise(promise2, y, resolve, reject);
       }, reject);
     } else if (x.PromiseState === 'fullfilled') {
       console.log('fullfilled');
@@ -202,7 +213,7 @@ function resolvePromise(promise2, x, resolve, reject) {
       console.log('rejetced');
       reject(x.PromiseResult);
     }
-  } else if (x !== null && ((typeof x === 'object' || (typeof x === 'function')))) {
+  } else if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
     try {
       var then = x.then;
     } catch (e) {
@@ -214,17 +225,17 @@ function resolvePromise(promise2, x, resolve, reject) {
       try {
         then.call(
           x,
-          y => {
+          (y) => {
             if (called) return;
             called = true;
             resolvePromise(promise2, y, resolve, reject);
           },
-          r => {
+          (r) => {
             if (called) return;
             called = true;
             reject(r);
           }
-        )
+        );
       } catch (e) {
         if (called) return;
         called = true;
@@ -238,8 +249,9 @@ function resolvePromise(promise2, x, resolve, reject) {
     return resolve(x);
   }
 }
+
 function nextTick(fn) {
-  if (process !== undefined && typeof process.nextTick === "function") {
+  if (process !== undefined && typeof process.nextTick === 'function') {
     return process.nextTick(fn);
   } else {
     var counter = 1;
@@ -247,7 +259,7 @@ function nextTick(fn) {
     var textNode = document.createTextNode(String(counter));
 
     observer.observe(textNode, {
-      characterData: true
+      characterData: true,
     });
 
     counter = counter + 1;
@@ -255,25 +267,6 @@ function nextTick(fn) {
   }
 }
 
-// const p1 = new Promise2((res,rej) => {
-//   rej(Promise.resolve('ok'))
-// })
-// p1.then(res => {
-//   console.log(res);
-// }, rej => {
-//   console.log(rej);
-// })
-const p2 = new Promise2((res)=>{
-  res('ok')
-})
-p2.then(res=>{
-  console.log(res);
-  return 'ok2'
-}).then(res=>{
-  console.log(res);
-}, rej=>{
-  console.log(rej);
-})
 Promise2.deferred = function () {
   let result = {};
   result.promise = new Promise2((resolve, reject) => {
@@ -281,5 +274,5 @@ Promise2.deferred = function () {
     result.reject = reject;
   });
   return result;
-}
+};
 module.exports = Promise2;
