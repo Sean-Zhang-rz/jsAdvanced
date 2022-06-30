@@ -6,6 +6,7 @@ class DeepClone {
   clone(source) {
     if (source instanceof Object) {
       const cacheDist = this.findCache(source);
+      console.log(cacheDist);
       if (cacheDist) {
         return cacheDist;
       } else {

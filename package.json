@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "tst": "mocha -r ts-node/register */test/**/*.ts",
-    "test": "mocha */test/**/*.ts",
+    "test": "mocha */test/**/*.js",
     "testp": "promises-aplus-tests Promise/src/index"
   },
   "devDependencies": {
