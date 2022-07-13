@@ -8,3 +8,6 @@ function _instanceof(left, right){
   }
 }
 console.log(_instanceof(Function, Object));
+class Parent {}
+const p = new Parent()
+console.log(_instanceof(p, Parent));
