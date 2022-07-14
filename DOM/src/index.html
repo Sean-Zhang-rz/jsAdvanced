@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="grandmo">
+    <div class="mother">
+      <div class="daughter">
+        <div class="baby">baby</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const baby = document.querySelector('.baby')
+    const daughter = document.querySelector('.daughter')
+    const mother = document.querySelector('.mother')
+    const grandmo = document.querySelector('.grandmo')
+    function theName() {
+      console.log(`我是${this.className}`)
+    }
+    baby.addEventListener('click', theName, false);
+    daughter.addEventListener('click', theName, true);
+    mother.addEventListener('click', theName, true);
+    grandmo.onclick = theName
+  </script>
+</body>
+</html>
