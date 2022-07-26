@@ -12,4 +12,3 @@ function func() {
 boundFunc = func.bind(1)
 new boundFunc()
 
-// todo
