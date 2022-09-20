@@ -4,17 +4,18 @@ const fn = (a: any): boolean => {
   // } else if (a instanceof Date) {
   //   a
   // }
-  a.toString()
-  a.toFixed(2)
-  return true
-}
+  a.toString();
+  a.toFixed(2);
+  return true;
+};
 const fn1 = (a: unknown): boolean => {
   // if (typeof a === 'string') {
   //   a
   // } else if (a instanceof Date) {
   //   a
   // }
-  a.toString()
+  // a.toString()
 
-  return true
-}
+  return true;
+};
+export {};

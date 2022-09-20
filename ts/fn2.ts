@@ -4,7 +4,7 @@ function createDate(year: number, month: number, date: number): Date;
 
 function createDate(a: number, b?: number, c?: number): Date {
   if (arguments.length === 3) {
-    return new Date(a, b, c);
+    return new Date(a, b!, c);
   } else if (arguments.length === 1) {
     return new Date(a);
   } else {
@@ -25,7 +25,7 @@ function f1(this: Person, word: string) {
 }
 // 方法1 拼凑person.f1
 const p: Person & { f1?: typeof f1 } = { name: 'frank' };
-p.f1('hi');
+// p.f1('hi');
 
 // 直接在Person上声明方法
 
@@ -90,5 +90,7 @@ function fv2(): void {
   return undefined;
 }
 function fv3(): void {
-  return null; // 可能会报错，可以关闭tsconfig里的null检查
+  // 可能会报错，可以关闭tsconfig里的null检查
+  //return null;
 }
+export {};
