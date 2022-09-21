@@ -20,4 +20,10 @@ type StringToTuple<S extends string> = S extends `${infer F}${infer R}`
   ? [F, ...StringToTuple<R>]
   : [];
 type LastOfString<S extends string> = Last<StringToTuple<S>>;
+
+// 字符串转换成联合类型 递归 自动去重
+type StringToUnion<S extends string> = S extends `${infer First}${infer Rest}`
+  ? First | StringToUnion<Rest>
+  : never;
+type Result1 = StringToUnion<'ji ni tai mei'>;
 export {};

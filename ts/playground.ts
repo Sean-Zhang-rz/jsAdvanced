@@ -20,7 +20,7 @@ type Result2 = IsEmptyArray<Arr>;
 type NotEmpty<Arr extends unknown[]> = Arr extends [...unknown[], unknown] ? true : false;
 type NotEmpty1<Arr extends unknown[]> = Arr extends [...infer X, infer Y] ? true : false;
 
-// 3. 递归
+// 3. 递归 最多48次
 // 3.1 翻转数组
 type Arr3 = ['ji', 'ni', 'tai', 'mei'];
 type Reverse<Arr extends unknown[]> = Arr extends [...infer Rest, infer Last]
