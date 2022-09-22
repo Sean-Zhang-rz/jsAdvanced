@@ -7,7 +7,7 @@ declare global {
     }
     interface IntrinsicElements {
       h1: {
-        name: number;
+        name?: number;
       };
     }
   }
