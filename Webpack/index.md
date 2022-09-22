@@ -90,6 +90,7 @@
 
 #### 循环依赖
 虽然代码运行不了，但是应该可以分析依赖，称为静态分析
+检测key避免重复
 ```typescript
   // ...
   const key = getProjectPath(filepath) // 文件的项目路径，如 index.js

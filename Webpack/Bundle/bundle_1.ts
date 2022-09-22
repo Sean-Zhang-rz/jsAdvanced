@@ -9,12 +9,13 @@ const projectRoot = resolve(__dirname, 'ie1')
 
 // 类型声明
 type DepRelation = {
-  key:string
-  deps: string[],
-  code: string
-}[]
+  [key: string]: {
+    deps: string[],
+    code: string
+  }
+}
 // 初始化一个空的 depRelation，用于收集依赖
-const depRelation: DepRelation = []
+const depRelation: DepRelation = {}
 
 collectCodeAndDeps(resolve(projectRoot, 'index.js'))
 console.log(depRelation);
@@ -27,12 +28,11 @@ function collectCodeAndDeps(filepath: string) {
   // 获取文件内容，将内容放至 depRelation
   const code = readFileSync(filepath).toString()
   // 将code装换成es5 code
-  const {code: es5Code} = babel.transform(code, {
+  const es5Code = babel.transform(code, {
     presets: ['@babel/preset-env']
-  })
+  })!.code!
   // 初始化 depRelation[key]
-  const item = {key,  deps: [], code: es5Code }
-  depRelation.push(item)
+  depRelation[key] = { deps: [], code: es5Code }
   // 将代码转为 AST
   const ast = parse(code, { sourceType: 'module' })
   // 分析文件依赖，将内容放至 depRelation
@@ -44,7 +44,7 @@ function collectCodeAndDeps(filepath: string) {
         // 然后转为项目路径
         const depProjectPath = getProjectPath(depAbsolutePath)
         // 把依赖写进 depRelation
-        item.deps.push(depProjectPath)
+        depRelation[key].deps.push(depProjectPath)
         collectCodeAndDeps(depAbsolutePath)
       }
     }
