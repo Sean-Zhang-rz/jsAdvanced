@@ -112,10 +112,10 @@ Person1.prop; // 静态成员只能通过类访问
 // static block
 class Foo {
   static #count = 0;
-  static {
+  // static {
     // const count = loadFromLocalStorage() || 0;
     // Foo.#count += count;
-  }
+  // }
   constructor() {
     console.log(Foo.#count);
   }
