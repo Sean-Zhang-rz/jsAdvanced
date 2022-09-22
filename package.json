@@ -11,6 +11,7 @@
     "testp": "promises-aplus-tests Promise/src/index"
   },
   "devDependencies": {
+    "@types/babel__core": "^7.1.19",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.0.0",

@@ -9,4 +9,6 @@ const ast = parse(code, { sourceType: 'module' });
 const result = babel.transformFromAstSync(ast, code, {
   presets: ['@babel/preset-env'],
 });
-fs.writeFileSync('./WebPack/index.es5.js', result.code);
+console.log(result!.code);
+
+fs.writeFileSync('./WebPack/index.es5.js', result!.code!);
