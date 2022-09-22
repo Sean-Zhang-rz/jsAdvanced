@@ -35,11 +35,12 @@ type MyIsTuple<T> = [T] extends [never]
   : true;
 
 // join
-type MyJoin<T extends string[], U extends string | number> = T extends [
-  infer First extends string,
-  ...infer Rest extends string[]
-]
-  ? Rest['length'] extends 0
-    ? First
-    : `${First}${U}${MyJoin<Rest, U>}`
-  : '';
+type MyJoin<T extends string[], U extends string | number> = T extends [infer First, ...infer Rest]
+  ? First extends string
+    ? Rest extends string[]
+      ? Rest['length'] extends 0
+        ? First
+        : `${First}${U}${MyJoin<Rest, U>}`
+      : ''
+    :never
+  :never

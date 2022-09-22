@@ -3,7 +3,7 @@ const Header = (props: {level: number}, context: unknown) => {
   return <h1>我的等级是{props.level}</h1>
 }
 
-const App = <Header level={1}></Header>
+const App = <Header level={1}>{123}</Header>
 
 // 类组件
 class ClassHeader {
