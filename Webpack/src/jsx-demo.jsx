@@ -1,6 +1,7 @@
-const JSXDemo = () => {
-  return (
+import React from 'react';
+
+const JSXDemo = () => (
     <h1>123</h1>
-  )
-}
-export { JSXDemo }
+);
+
+export default JSXDemo;
