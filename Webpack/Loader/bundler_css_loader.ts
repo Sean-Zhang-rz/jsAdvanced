@@ -66,15 +66,7 @@ function collectCodeAndDeps(filepath: string) {
   // 获取文件内容，将内容放至 depRelation
   let code = readFileSync(filepath).toString();
   if (/\.css$/.test(filepath)) {
-    code = `
-      const str = ${JSON.stringify(code)}
-      if (document) {
-        const style = document.createElement('style')
-        style.innerHTML = str
-        document.head.appendChild(style)
-      }
-      export default str
-    `
+    code = require('./loaders/css-loader.js')(code)
   }
   // 将code装换成es5 code
   const es5Code = babel.transform(code, {
