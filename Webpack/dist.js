@@ -76,15 +76,11 @@ var modules = {};
 execute(depRelation[0].key);
 function execute(key) {
   // 如果已经 require 过，就直接返回上次的结果
-  if (modules[key]) {
-    return modules[key];
-  }
+  if (modules[key]) return modules[key];
   // 找到要执行的项目
   var item = depRelation.find((i) => i.key === key);
   // 找不到就报错，中断执行
-  if (!item) {
-    throw new Error(`${item} is not found`);
-  }
+  if (!item) throw new Error(`${item} is not found`);
   // 把相对路径变成项目路径
   var pathToKey = (path) => {
     var dirname = key.substring(0, key.lastIndexOf('/') + 1);
@@ -92,9 +88,7 @@ function execute(key) {
     return projectPath;
   };
   // 创建 require 函数
-  var require = (path) => {
-    return execute(pathToKey(path));
-  };
+  var require = (path) => execute(pathToKey(path));
   // 初始化当前模块
   modules[key] = { __esModule: true };
   // 初始化 module 方便 code 往 module.exports 上添加属性
