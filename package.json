@@ -8,7 +8,8 @@
   "scripts": {
     "tst": "mocha -r ts-node/register */test/**/*.ts",
     "test": "mocha */test/**/*.js",
-    "testp": "promises-aplus-tests Promise/src/index"
+    "testp": "promises-aplus-tests Promise/src/index",
+    "build": "webpack"
   },
   "devDependencies": {
     "@types/babel__core": "^7.1.19",
