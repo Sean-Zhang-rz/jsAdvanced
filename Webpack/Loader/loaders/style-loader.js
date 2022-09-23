@@ -1,3 +1,4 @@
+// 无法使用，有问题
 const transform = code => `
   if (document) {
     const style = document.createElement('style')
