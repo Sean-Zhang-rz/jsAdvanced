@@ -67,6 +67,7 @@ function collectCodeAndDeps(filepath: string) {
   let code = readFileSync(filepath).toString();
   if (/\.css$/.test(filepath)) {
     code = require('./loaders/css-loader.js')(code)
+    code = require('./loaders/style-loader.js')(code)
   }
   // 将code装换成es5 code
   const es5Code = babel.transform(code, {
