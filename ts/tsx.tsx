@@ -12,14 +12,14 @@ declare global {
 
     // 共有属性
     interface IntrinsicAttributes {
-      key?: string
-      id?: string
+      key?: string;
+      id?: string;
     }
     // ref
     interface IntrinsicClassAttributes<T> {
       ref?: {
-        current: T | null
-      }
+        current: T | null;
+      };
     }
     interface IntrinsicElements {
       h1: {

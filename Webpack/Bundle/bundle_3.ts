@@ -1,7 +1,7 @@
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import { writeFileSync, readFileSync } from 'fs';
-import { resolve, relative, dirname, join } from 'path';
+import { resolve, relative, dirname } from 'path';
 import * as babel from '@babel/core';
 
 // 设置根目录
