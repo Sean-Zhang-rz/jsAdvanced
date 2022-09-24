@@ -1,5 +1,6 @@
 const path = require('path');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const cssLoader = (...loaders) => [
   'style-loader',
   {
@@ -18,6 +19,7 @@ module.exports = {
     new ESLintPlugin({
       extensions: ['.js', '.jsx'],
     }),
+    new HtmlWebpackPlugin(),
   ],
   // 路径别名
   resolve: {
