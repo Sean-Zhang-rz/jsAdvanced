@@ -8,7 +8,7 @@ import './scss-demo.scss';
 import 'src/less-demo.less';
 const b = import('./b');
 
-console.log(vars);
+console.log(vars.color);
 console.log(varsLess);
 console.log(TsxDemo);
 

@@ -1,6 +1,17 @@
 const path = require('path');
 const ESLintPlugin = require('eslint-webpack-plugin');
-
+const cssLoader = (...loaders) => [
+  'style-loader',
+  {
+    loader: 'css-loader',
+    options: {
+      modules: {
+        compileType: 'icss',
+      },
+    },
+  },
+  ...loaders,
+];
 module.exports = {
   mode: 'production',
   plugins: [
@@ -33,53 +44,31 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                compileType: 'icss',
-              },
-            },
-          },
-          {
-            loader: 'less-loader',
-            options: {
-              additionalData: `
+        use: cssLoader({
+          loader: 'less-loader',
+          options: {
+            additionalData: `
                 @import "~src/less-vars.less";
               `,
-              lessOptions: {
-                includePaths: [__dirname],
-              },
+            lessOptions: {
+              includePaths: [__dirname],
             },
           },
-        ],
+        }),
       },
       {
         test: /\.s[ac]ss$/i,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              modules: {
-                compileType: 'icss',
-              },
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              additionalData: `
+        use: cssLoader({
+          loader: 'sass-loader',
+          options: {
+            additionalData: `
                 @import "~src/scss-vars.scss";
               `,
-              sassOptions: {
-                includePaths: [__dirname],
-              },
+            sassOptions: {
+              includePaths: [__dirname],
             },
           },
-        ],
+        }),
       },
     ],
   },
