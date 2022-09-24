@@ -3,11 +3,13 @@ import JSXDemo from './jsx-demo.jsx';
 import { TsxDemo } from 'src/tsx-demo.tsx';
 import c from './ts-demo.ts';
 import vars from 'src/scss-export.scss';
+import varsLess from 'src/less-vars.less';
 import './scss-demo.scss';
 import 'src/less-demo.less';
 const b = import('./b');
 
 console.log(vars);
+console.log(varsLess);
 console.log(TsxDemo);
 
 console.log(JSXDemo);
