@@ -2,6 +2,7 @@ import a from './a';
 import JSXDemo from './jsx-demo.jsx';
 import { TsxDemo } from '@/Webpack/src/tsx-demo.tsx';
 import c from './ts-demo.ts';
+import './scss-demo.scss';
 const b = import('./b');
 
 console.log(TsxDemo);
