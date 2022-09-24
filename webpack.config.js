@@ -19,8 +19,8 @@ const cssLoader = (...loaders) => [
 module.exports = {
   mode,
   entry: {
-    main: './src/index.js',
-    admin: './src/admin.js',
+    main: 'src/index.js',
+    admin: 'Webpack/src/admin.js',
   },
   plugins: [
     new ESLintPlugin({
@@ -33,7 +33,7 @@ module.exports = {
     new HtmlWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'admin.html',
-      chunks: ['admin.js'],
+      chunks: ['admin'],
     }),
   ].filter(Boolean),
   output: {
@@ -45,10 +45,18 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         vendor: {
+          priority: 6,
           minSize: 0, // 如果不写0，由于React文件尺寸太小，会直接跳过
           test: /[\\/]node_modules[\\/]/, // 为了匹配/node_modules/ 或\node_modules\
           name: 'vendors', // 文件名
           chunks: 'all', // all表示同步加载和一部加载，async表示异步加载，initial表示同步加载
+        },
+        common: {
+          priority: 5,
+          minSize: 0,
+          minChunks: 2,
+          chunks: 'all',
+          name: 'common',
         },
       },
     },

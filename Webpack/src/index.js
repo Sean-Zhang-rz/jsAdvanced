@@ -5,10 +5,12 @@ import c from './ts-demo.ts';
 import vars from 'src/scss-export.scss';
 import varsLess from 'src/less-vars.less';
 import React from 'react';
+import shared from './shared.js';
 import './scss-demo.scss';
 import 'src/less-demo.less';
 const b = import('./b');
 
+console.log(shared);
 console.log(React);
 console.log(vars.color);
 console.log(varsLess);
