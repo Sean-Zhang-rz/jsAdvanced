@@ -1,2 +1,2 @@
-const c: number = 1
-export default c
+const c: number = 1;
+export default c;

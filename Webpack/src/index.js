@@ -1,6 +1,6 @@
 import a from './a';
 import JSXDemo from './jsx-demo.jsx';
-import c from './ts-demo.ts'
+import c from './ts-demo.ts';
 const b = import('./b');
 
 console.log(JSXDemo);

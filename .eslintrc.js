@@ -5,6 +5,7 @@ module.exports = {
     // 提示要在 JSX 文件里手动引入 React
     'react/react-in-jsx-scope': [2],
     'no-console': [0],
+    'linebreak-style': ['off', 'windows'],
   },
   overrides: [
     {

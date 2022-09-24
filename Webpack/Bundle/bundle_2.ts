@@ -1,7 +1,7 @@
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import { readFileSync } from 'fs';
-import { resolve, relative, dirname, join } from 'path';
+import { resolve, relative, dirname } from 'path';
 import * as babel from '@babel/core';
 
 // 设置根目录
@@ -15,10 +15,10 @@ type DepRelation = {
 };
 // 初始化一个空的 depRelation，用于收集依赖
 const depRelation: DepRelation[] = [];
-
-collectCodeAndDeps(resolve(projectRoot, 'index.js'));
-console.log(depRelation);
-console.log('done');
+// 获取文件相对于根目录的相对路径
+function getProjectPath(path: string) {
+  return relative(projectRoot, path).replace(/\\/g, '/');
+}
 
 function collectCodeAndDeps(filepath: string) {
   const key = getProjectPath(filepath); // 文件的项目路径，如 index.js
@@ -50,7 +50,6 @@ function collectCodeAndDeps(filepath: string) {
     },
   });
 }
-// 获取文件相对于根目录的相对路径
-function getProjectPath(path: string) {
-  return relative(projectRoot, path).replace(/\\/g, '/');
-}
+collectCodeAndDeps(resolve(projectRoot, 'index.js'));
+console.log(depRelation);
+console.log('done');
