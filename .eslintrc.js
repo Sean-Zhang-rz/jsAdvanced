@@ -6,7 +6,7 @@ module.exports = {
     'react/react-in-jsx-scope': [2],
     'no-console': [0]
   },
-  overrides: [{
+  overrides: [{ // 不检查ts
     files: ['*.ts', '*.tsx'],
     parserOptions: {
       project: './tsconfig.json',
