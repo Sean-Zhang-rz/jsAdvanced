@@ -1,6 +1,6 @@
 import a from './a';
 import JSXDemo from './jsx-demo.jsx';
-import { TsxDemo } from './tsx-demo.tsx';
+import { TsxDemo } from '@/Webpack/src/tsx-demo.tsx';
 import c from './ts-demo.ts';
 const b = import('./b');
 
