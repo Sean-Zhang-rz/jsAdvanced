@@ -4,6 +4,7 @@ import { TsxDemo } from 'src/tsx-demo.tsx';
 import c from './ts-demo.ts';
 import vars from 'src/scss-export.scss';
 import './scss-demo.scss';
+import 'src/less-demo.less';
 const b = import('./b');
 
 console.log(vars);
