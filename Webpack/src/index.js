@@ -4,10 +4,12 @@ import { TsxDemo } from 'src/tsx-demo.tsx';
 import c from './ts-demo.ts';
 import vars from 'src/scss-export.scss';
 import varsLess from 'src/less-vars.less';
+import React from 'react';
 import './scss-demo.scss';
 import 'src/less-demo.less';
 const b = import('./b');
 
+console.log(React);
 console.log(vars.color);
 console.log(varsLess);
 console.log(TsxDemo);

@@ -2,8 +2,10 @@ const path = require('path');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const mode = 'production';
 const cssLoader = (...loaders) => [
-  MiniCssExtractPlugin.loader,
+  mode === 'production' ? MiniCssExtractPlugin.loader : 'style-loader',
   {
     loader: 'css-loader',
     options: {
@@ -15,18 +17,32 @@ const cssLoader = (...loaders) => [
   ...loaders,
 ];
 module.exports = {
-  mode: 'production',
+  mode,
   plugins: [
     new ESLintPlugin({
       extensions: ['.js', '.jsx'],
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-    }),
+    mode === 'production' &&
+      new MiniCssExtractPlugin({
+        filename: '[name].[contenthash].css',
+      }),
     new HtmlWebpackPlugin(),
-  ],
+  ].filter(Boolean),
   output: {
     filename: '[name].[contenthash].js',
+  },
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          minSize: 0, // 如果不写0，由于React文件尺寸太小，会直接跳过
+          test: /[\\/]node_modules[\\/]/, // 为了匹配/node_modules/ 或\node_modules\
+          name: 'vendors', // 文件名
+          chunks: 'all', // all表示同步加载和一部加载，async表示异步加载，initial表示同步加载
+        },
+      },
+    },
   },
   // 路径别名
   resolve: {
