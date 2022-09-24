@@ -5,6 +5,7 @@
   "repository": "git@github.com:SeanMr/jsAdvanced.git",
   "author": "sean <770899447@qq.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "tst": "mocha -r ts-node/register */test/**/*.ts",
     "test": "mocha */test/**/*.js",

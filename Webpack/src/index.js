@@ -1,10 +1,12 @@
-import a from './a';
+import a from './a.js';
 import JSXDemo from './jsx-demo.jsx';
-import { TsxDemo } from '@/Webpack/src/tsx-demo.tsx';
+import { TsxDemo } from 'src/tsx-demo.tsx';
 import c from './ts-demo.ts';
+import vars from 'src/scss-export.scss';
 import './scss-demo.scss';
 const b = import('./b');
 
+console.log(vars);
 console.log(TsxDemo);
 
 console.log(JSXDemo);

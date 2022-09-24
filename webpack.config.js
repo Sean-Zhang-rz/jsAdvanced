@@ -35,7 +35,14 @@ module.exports = {
         test: /\.s[ac]ss$/i, // 处理less文件
         use: [
           'style-loader', // 将css文件变成commonjs模块加载js中，里面样式内容是字符串
-          'css-loader', // 将less文件编译成css文件
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                compileType: 'icss',
+              },
+            },
+          },
           {
             loader: 'sass-loader',
             options: {
