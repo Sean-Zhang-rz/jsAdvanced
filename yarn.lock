@@ -3700,10 +3700,10 @@
   "resolved" "https://registry.npmmirror.com/mimic-fn/-/mimic-fn-2.1.0.tgz"
   "version" "2.1.0"
 
-"mini-css-extract-plugin@1.3.8":
-  "integrity" "sha512-u+2kVov/Gcs74iz+x3phEBWMAGw2djjnKfYez+Pl/b5dyXL7aM4Lp5QQtIq16CDwRHT/woUJki49gBNMhfm1eA=="
-  "resolved" "https://registry.npmmirror.com/mini-css-extract-plugin/-/mini-css-extract-plugin-1.3.8.tgz"
-  "version" "1.3.8"
+"mini-css-extract-plugin@^1.6.2":
+  "integrity" "sha512-WhDvO3SjGm40oV5y26GjMJYjd2UMqrLAGKy5YS2/3QKJy2F7jgynuHTir/tgUUOiNQu5saXHdc8reo7YuhhT4Q=="
+  "resolved" "https://registry.npmmirror.com/mini-css-extract-plugin/-/mini-css-extract-plugin-1.6.2.tgz"
+  "version" "1.6.2"
   dependencies:
     "loader-utils" "^2.0.0"
     "schema-utils" "^3.0.0"
