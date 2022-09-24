@@ -1,2 +1,2 @@
-const b = 1
-export default b
+const b = 1;
+export default b;
