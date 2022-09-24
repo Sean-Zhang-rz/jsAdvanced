@@ -12,6 +12,7 @@ module.exports = {
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
+      src: path.resolve(__dirname, './Webpack/src/'),
     },
   },
   module: {
@@ -35,7 +36,17 @@ module.exports = {
         use: [
           'style-loader', // 将css文件变成commonjs模块加载js中，里面样式内容是字符串
           'css-loader', // 将less文件编译成css文件
-          'sass-loader', // 需要下载less-loader和less
+          {
+            loader: 'sass-loader',
+            options: {
+              additionalData: `
+                @import "~src/scss-vars.scss";
+              `,
+              sassOptions: {
+                includePaths: [__dirname],
+              },
+            },
+          },
         ],
       },
     ],
