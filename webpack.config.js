@@ -2,6 +2,7 @@ const path = require('path');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { resolve } = require('path');
 
 const mode = 'production';
 const cssLoader = (...loaders) => [
@@ -16,11 +17,13 @@ const cssLoader = (...loaders) => [
   },
   ...loaders,
 ];
+console.log(resolve(__dirname, 'Webpack', 'src', 'admin.js'));
 module.exports = {
   mode,
   entry: {
-    main: 'src/index.js',
-    admin: 'Webpack/src/admin.js',
+    main: './Webpack/src/index.js',
+    // admin: './src/admin.js',
+    admin: resolve(__dirname, 'Webpack', 'src', 'admin.js'),
   },
   plugins: [
     new ESLintPlugin({
@@ -30,7 +33,10 @@ module.exports = {
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash].css',
       }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      chunks: ['main'],
+    }),
     new HtmlWebpackPlugin({
       filename: 'admin.html',
       chunks: ['admin'],
