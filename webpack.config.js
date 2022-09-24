@@ -18,6 +18,10 @@ const cssLoader = (...loaders) => [
 ];
 module.exports = {
   mode,
+  entry: {
+    main: './src/index.js',
+    admin: './src/admin.js',
+  },
   plugins: [
     new ESLintPlugin({
       extensions: ['.js', '.jsx'],
@@ -27,6 +31,10 @@ module.exports = {
         filename: '[name].[contenthash].css',
       }),
     new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      filename: 'admin.html',
+      chunks: ['admin.js'],
+    }),
   ].filter(Boolean),
   output: {
     filename: '[name].[contenthash].js',

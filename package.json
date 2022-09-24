@@ -9,7 +9,7 @@
     "tst": "mocha -r ts-node/register */test/**/*.ts",
     "test": "mocha */test/**/*.js",
     "testp": "promises-aplus-tests Promise/src/index",
-    "build": "webpack"
+    "build": "webpack ./Webpack/src/index.js"
   },
   "devDependencies": {
     "@babel/core": "7.12.17",
