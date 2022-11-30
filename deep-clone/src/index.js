@@ -2,7 +2,6 @@ class DeepClone {
   constructor() {
     this.cache = [];
   }
-
   clone(source) {
     if (source instanceof Object) {
       const cacheDist = this.findCache(source);
@@ -11,6 +10,7 @@ class DeepClone {
       } else {
         let dist;
         if (source instanceof Array) {
+          // eslint-disable-next-line no-array-constructor
           dist = new Array();
         } else if (source instanceof RegExp) {
           dist = new RegExp(source.source, source.flags);
@@ -21,6 +21,7 @@ class DeepClone {
             return source.apply(this, arguments);
           };
         } else {
+          // eslint-disable-next-line no-new-object
           dist = new Object();
         }
         this.cache.push([source, dist]);
@@ -32,7 +33,6 @@ class DeepClone {
         return dist;
       }
     }
-
     return source;
   }
   findCache(source) {
