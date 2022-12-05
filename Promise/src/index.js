@@ -41,7 +41,8 @@ class Promise2 {
   }
 
   then(onFulfilled, onRejected) {
-    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+    onFulfilled =
+      typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
     onRejected =
       typeof onRejected === 'function'
         ? onRejected
@@ -118,27 +119,24 @@ class Promise2 {
     });
   }
   static all(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!(promises instanceof Array))
+      throw TypeError('Argument is not iterable');
     if (!promises.length) return Promise2.resolve(promises);
     return new Promise2((resolve, reject) => {
       const result = [];
       let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then(
-          (res) => {
-            result[index] = res;
-            count += 1;
-            if (count === promises.length) resolve(result);
-          },
-          (rej) => {
-            reject(rej);
-          }
-        );
+        Promise2.resolve(p).then((res) => {
+          result[index] = res;
+          count += 1;
+          if (count === promises.length) resolve(result);
+        }, reject);
       });
     });
   }
   static allSettled(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!(promises instanceof Array))
+      throw TypeError('Argument is not iterable');
     if (!promises.length) return Promise2.resolve(promises);
     return new Promise2((resolve, reject) => {
       const result = [];
@@ -168,27 +166,24 @@ class Promise2 {
     });
   }
   static any(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!(promises instanceof Array))
+      throw TypeError('Argument is not iterable');
     if (!promises.length) return Promise2.reject('All promises were rejected');
     return new Promise2((resolve, reject) => {
       const error = [];
       let count = 0;
       promises.forEach((p, index) => {
-        Promise2.resolve(p).then(
-          (res) => {
-            resolve(res);
-          },
-          (rej) => {
-            count += 1;
-            error[index] = rej;
-            if (count === promises.length) reject('All promises were rejected');
-          }
-        );
+        Promise2.resolve(p).then(resolve, (rej) => {
+          count += 1;
+          error[index] = rej;
+          if (count === promises.length) reject('All promises were rejected');
+        });
       });
     });
   }
   static race(promises) {
-    if (!(promises instanceof Array)) throw TypeError('Argument is not iterable');
+    if (!(promises instanceof Array))
+      throw TypeError('Argument is not iterable');
     if (!promises.length) return new Promise2(() => {});
     return new Promise2((resolve, reject) => {
       promises.forEach((p) => {
@@ -199,7 +194,8 @@ class Promise2 {
 }
 
 function resolvePromise(promise2, x, resolve, reject) {
-  if (x === promise2) return reject(new TypeError('Chaining cycle detected for promise'));
+  if (x === promise2)
+    return reject(new TypeError('Chaining cycle detected for promise'));
 
   if (x instanceof Promise2) {
     if (x.PromiseState === 'pending') {

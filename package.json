@@ -8,7 +8,7 @@
   "scripts": {
     "tst": "mocha -r ts-node/register */test/**/*.ts",
     "test": "mocha */test/**/*.js",
-    "testp": "promises-aplus-tests Promise/src/index",
+    "testp": "promises-aplus-tests Promise/demo",
     "build": "webpack ./Webpack/src/index.js"
   },
   "devDependencies": {
@@ -17,6 +17,7 @@
     "@babel/preset-react": "7.12.13",
     "@babel/preset-typescript": "7.12.17",
     "@types/babel__core": "^7.1.19",
+    "@types/jest": "^29.2.3",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.1",
     "@typescript-eslint/eslint-plugin": "4.15.1",

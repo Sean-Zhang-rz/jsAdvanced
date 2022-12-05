@@ -2,10 +2,10 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 // import Promise2 from '../src/index2';
-const Promise2 = require('../src/index2')
+const Promise2 = require('../demo');
 
 chai.use(sinonChai);
-const assert = chai.assert;
+const { assert } = chai;
 
 describe('Promise', () => {
   it('是一个类', () => {
@@ -31,7 +31,7 @@ describe('Promise', () => {
     assert.isFunction(promise.then);
   });
   it('fn立刻执行', () => {
-    let fn = sinon.fake();
+    const fn = sinon.fake();
     new Promise2(fn);
     assert.isTrue(fn.called);
   });
@@ -79,7 +79,7 @@ describe('Promise', () => {
       // assert.isTrue(promise.state === 'pending');
       assert.isFalse(succeed.called);
       res(233);
-      setTimeout(() => {        
+      setTimeout(() => {
         assert.isTrue(promise.state === 'fullfilled');
         assert.isTrue(succeed.called);
         assert.isTrue(succeed.calledWith(233));
@@ -136,7 +136,6 @@ describe('Promise', () => {
       res();
     });
     promise.then(function () {
-      'use strict';
       assert.isTrue(this === undefined);
       done();
     });
